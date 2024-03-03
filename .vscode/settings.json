@@ -1,0 +1,14 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/shan/turtlebot4_ws/build/aaqr_ros2_py",
+        "/home/shan/turtlebot4_ws/install/aaqr_ros2_py/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/shan/turtlebot4_ws/build/aaqr_ros2_py",
+        "/home/shan/turtlebot4_ws/install/aaqr_ros2_py/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}
