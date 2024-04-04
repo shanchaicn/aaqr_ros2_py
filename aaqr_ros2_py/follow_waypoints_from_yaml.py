@@ -3,7 +3,12 @@
 import rclpy
 import yaml
 from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, TurtleBot4Navigator
+import os
+from geometry_msgs.msg import PoseStamped, Quaternion, Point
 
+home_dir = os.path.expanduser('~')
+
+filepath = os.path.join(home_dir, 'current_pose.yaml')
 
 def load_waypoints_from_yaml(file_path):
     with open(file_path, 'r') as yaml_file:
@@ -29,21 +34,27 @@ def main():
     navigator.waitUntilNav2Active()
 
     # Load goal poses from YAML file
-    waypoints_file = 'waypoints.yaml'  # Update with your YAML file path
-    goal_poses = load_waypoints_from_yaml(waypoints_file)
 
-    # Convert loaded coordinates to PoseStamped messages
-    goal_pose_msgs = []
-    for pose in goal_poses:
-        position = pose['position']
-        direction = pose['direction']
-        goal_pose_msgs.append(navigator.getPoseStamped(position, direction))
+    goal_poses = load_waypoints_from_yaml(filepath)
+
+
+    poses = []
+    for key, value in goal_poses.items():
+        pose = PoseStamped()
+        pose.header.frame_id = 'map'  # Change the frame_id as required
+        pose.header.stamp = navigator.get_clock().now().to_msg()
+        pose.pose.position = Point(x=value['position']['x'], y=value['position']['y'], z=value['position']['z'])
+        pose.pose.orientation = Quaternion(w=value['orientation']['w'],
+                                            x=value['orientation']['x'],
+                                            y=value['orientation']['y'],
+                                            z=value['orientation']['z'])
+        poses.append(pose)
 
     # Undock
     navigator.undock()
 
     # Follow Waypoints
-    navigator.startFollowWaypoints(goal_pose_msgs)
+    navigator.startFollowWaypoints(poses)
 
     # Finished navigating, dock
     navigator.dock()
