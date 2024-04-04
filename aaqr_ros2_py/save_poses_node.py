@@ -88,9 +88,9 @@ class PoseSaver(Node):
             pose_id = 1
             try:
                 while rclpy.ok():
-                    rclpy.spin_once(self)
                     key = input("Press 's' to save pose, 'd' to delete last pose, 'q' to quit: ")
                     if key == 's':
+                        rclpy.spin_once(self)
                         self.save_points(pose_id,points_yaml,filepath)
                         print("==== save point {} ====".format(pose_id))
                         pose_id = pose_id + 1
