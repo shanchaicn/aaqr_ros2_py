@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'save_poses_node = aaqr_ros2_py.save_poses_node:main'
+            'save_poses_node = aaqr_ros2_py.save_poses_node:main',
+            'follow_waypoints_from_yaml = aaqr_ros2_py.follow_waypoints_from_yaml:main'
         ],
     },
 )
