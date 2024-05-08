@@ -7,8 +7,11 @@ import os
 from geometry_msgs.msg import PoseStamped, Quaternion, Point
 
 home_dir = os.path.expanduser('~')
+aaqr_dir = os.path.join(home_dir, 'aaqr')
+pose_dir = os.path.join(aaqr_dir, 'pose')
+os.makedirs(pose_dir, exist_ok=True)
 
-filepath = os.path.join(home_dir, 'current_pose.yaml')
+filepath = os.path.join(pose_dir, 'map.yaml')
 
 def load_waypoints_from_yaml(file_path):
     with open(file_path, 'r') as yaml_file:
