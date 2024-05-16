@@ -11,6 +11,10 @@ from tf2_ros.transform_listener import TransformListener
 
 from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, TurtleBot4Navigator
 
+home_dir = os.path.expanduser('~')
+aaqr_dir = os.path.join(home_dir, 'aaqr')
+pose_dir = os.path.join(aaqr_dir, 'pose')
+
 class FrameListener(Node):
 
     def __init__(self):
@@ -42,9 +46,10 @@ class FrameListener(Node):
         self.navigator.waitUntilNav2Active()
 
         # Load goal poses from YAML file
-        home_dir = os.path.expanduser('~')
-        filepath = os.path.join(home_dir, 'current_pose.yaml')
-        self.goal_poses = self.load_waypoints_from_yaml(filepath)
+        self.map_name = self.declare_parameter('map_name', 'map').get_parameter_value().string_value
+        
+        self.filepath = os.path.join(pose_dir, f'{self.map_name}.yaml')
+        self.goal_poses = self.load_waypoints_from_yaml(self.filepath)
 
         # Convert goal poses to PoseStamped messages
         self.poses = []
