@@ -1,3 +1,4 @@
+
 import rclpy
 from rclpy.node import Node
 
@@ -23,7 +24,7 @@ class PoseSaver(Node):
         self.tf_listener = TransformListener(self.tf_buffer, self)
         while rclpy.ok():
             try:
-                self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
+                self.t=self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
                 self.get_logger().info("Transform 'map' to 'base_link' is available.")
                 break
             except TransformException as ex:
@@ -32,28 +33,31 @@ class PoseSaver(Node):
         self.get_logger().info("%s" %self.filepath)
 
     def save_points(self, pose_id, pose_yaml, file_path):
-        try:
-            t = self.tf_buffer.lookup_transform('map','base_link', rclpy.time.Time())
-            pose_dict = {
-                'position': {
-                    'x': t.transform.translation.x,
-                    'y': t.transform.translation.y,
-                    'z': t.transform.translation.z
-                },
-                'orientation': {
-                    'x': t.transform.rotation.x,
-                    'y': t.transform.rotation.y,
-                    'z': t.transform.rotation.z,
-                    'w': t.transform.rotation.w
+        while rclpy.ok():
+            try:
+                self.t=self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
+                self.get_logger().info("Transform 'map' to 'base_link' is available.")
+                pose_dict = {
+                    'position': {
+                        'x': self.t.transform.translation.x,
+                        'y': self.t.transform.translation.y,
+                        'z': self.t.transform.translation.z
+                    },
+                    'orientation': {
+                        'x': self.t.transform.rotation.x,
+                        'y': self.t.transform.rotation.y,
+                        'z': self.t.transform.rotation.z,
+                        'w': self.t.transform.rotation.w
+                    }
                 }
-            }
-            self.get_logger().info("x= %0.2f,y=%0.2f."% (t.transform.translation.x, t.transform.translation.y))
-            pose_yaml[pose_id] = pose_dict
-            with open(file_path, 'w') as yaml_file:
-                yaml.dump(pose_yaml, yaml_file)
-                self.get_logger().info("pose updated")
-        except TransformException as ex:
-            pass
+                pose_yaml[pose_id] = pose_dict
+                self.get_logger().info("x= %0.2f,y=%0.2f."% (self.t.transform.translation.x, self.t.transform.translation.y))
+                with open(file_path, 'w') as yaml_file:
+                    yaml.dump(pose_yaml, yaml_file)
+                    self.get_logger().info("pose updated")
+                break
+            except TransformException as ex:
+                pass
 
     def delete_last_pose(self, points_yaml, filepath):
         if points_yaml:
@@ -76,7 +80,6 @@ class PoseSaver(Node):
                 while rclpy.ok():
                     key = input("Press 's' to save pose, 'd' to delete last pose, 'q' to quit: ")
                     if key == 's':
-                        rclpy.spin_once(self)
                         self.save_points(pose_id, points_yaml, self.filepath)
                         print("==== save point {} ====".format(pose_id))
                         pose_id += 1
