@@ -1,4 +1,3 @@
-
 import rclpy
 from rclpy.node import Node
 
@@ -48,6 +47,7 @@ class PoseSaver(Node):
                     'w': t.transform.rotation.w
                 }
             }
+            self.get_logger().info("x= %0.2f,y=%0.2f."% (t.transform.translation.x, t.transform.translation.y))
             pose_yaml[pose_id] = pose_dict
             with open(file_path, 'w') as yaml_file:
                 yaml.dump(pose_yaml, yaml_file)
@@ -76,6 +76,7 @@ class PoseSaver(Node):
                 while rclpy.ok():
                     key = input("Press 's' to save pose, 'd' to delete last pose, 'q' to quit: ")
                     if key == 's':
+                        rclpy.spin_once(self)
                         self.save_points(pose_id, points_yaml, self.filepath)
                         print("==== save point {} ====".format(pose_id))
                         pose_id += 1
