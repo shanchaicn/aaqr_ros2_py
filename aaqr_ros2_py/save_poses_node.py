@@ -31,7 +31,7 @@ class PoseSaver(Node):
     def save_points(self, pose_id, pose_yaml, file_path):
         while rclpy.ok():
             try:
-                self.t = self.tf_buffer.lookup_transform('world', 'turtle1', rclpy.time.Time())
+                self.t = self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
                 self.get_logger().info("Transform 'map' to 'base_link' is available.")
                 
                 pose_dict = {
