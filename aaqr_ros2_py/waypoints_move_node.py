@@ -97,7 +97,7 @@ class Waypointsmove(Node):
         # Change this to save the sensor reading and stampedpoint into SQL
         #####################
 
-        with open(os.path.join(pose_dir, 'current_position.yaml'), 'a') as file:
+        with open(os.path.join(pose_dir, f'{self.map_name}_data.yaml'), 'a') as file:
             yaml.dump({
                 'position': {
                     'x': self.real_position.x,
