@@ -62,7 +62,7 @@ USE THE SAME NAME IN THE WAYPOINTS MOVE
 *After running the Naviagtion*
 start the framelistener:
 ```
-ros2 run aaqr_ros2_py framelistener  --ros-args -p map_name:="myname"
+ros2 run aaqr_ros2_py framelistener
 ```
 This node will listen the transform of the `base_link` with respect to `map`and publish the pointStamped to topic `\turtlebot4_position`.
 ```
