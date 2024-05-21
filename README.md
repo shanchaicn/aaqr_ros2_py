@@ -50,12 +50,16 @@ ros2 launch turtlebot4_viz view_robot.launch.py
 
 
 ### Save poses with keyboard
+
+*After running the Naviagtion*
 Change the `myname` with what you want.
 ```
 ros2 run aaqr_ros2_py save_poses_node --ros-args -p map_name:="myname"
 ```
 USE THE SAME NAME IN THE WAYPOINTS MOVE
 ### Follow waypoints
+
+*After running the Naviagtion*
 0. start the framelistener:
 ```
 ros2 run aaqr_ros2_py framelistener  --ros-args -p map_name:="myname"
