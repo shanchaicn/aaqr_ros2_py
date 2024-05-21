@@ -60,12 +60,11 @@ USE THE SAME NAME IN THE WAYPOINTS MOVE
 ### Follow waypoints
 
 *After running the Naviagtion*
-0. start the framelistener:
+start the framelistener:
 ```
 ros2 run aaqr_ros2_py framelistener  --ros-args -p map_name:="myname"
 ```
 This node will listen the transform of the `base_link` with respect to `map`and publish the pointStamped to topic `\turtlebot4_position`.
-1. 
 ```
 ros2 run aaqr_ros2_py waypoints_move_node  --ros-args -p map_name:="myname"
 ```
