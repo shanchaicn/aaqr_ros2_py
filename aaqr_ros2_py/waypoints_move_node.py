@@ -1,3 +1,4 @@
+
 import os
 import yaml
 from geometry_msgs.msg import PointStamped, PoseStamped, Quaternion, Point
@@ -7,6 +8,8 @@ from rclpy.node import Node
 import threading
 from rclpy.executors import MultiThreadedExecutor
 from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, TurtleBot4Navigator
+from datetime import datetime, timedelta
+import requests
 
 home_dir = os.path.expanduser('~')
 aaqr_dir = os.path.join(home_dir, 'aaqr')
@@ -29,15 +32,16 @@ class Waypointsmove(Node):
         #     self.navigator.dock()
 
         # Set initial pose
+        # if  self.navigator.getDockedStatus():
         initial_pose = self.navigator.getPoseStamped([0.0, 0.0], TurtleBot4Directions.NORTH)
         self.navigator.setInitialPose(initial_pose)
-
+        self.get_logger().debug("Set_the_initial_pose")
         # Wait for Nav2
         self.navigator.waitUntilNav2Active()
 
         # Load goal poses from YAML file
-        self.map_name = self.declare_parameter('map_name', 'map').get_parameter_value().string_value
-        self.filepath = os.path.join(pose_dir, f'{self.map_name}.yaml')
+        self.wp_name = self.declare_parameter('wp_name', 'wp').get_parameter_value().string_value
+        self.filepath = os.path.join(pose_dir, f'{self.wp_name}.yaml')
         self.goal_poses = self.load_waypoints_from_yaml(self.filepath)
 
         # Convert goal poses to PoseStamped messages
@@ -60,10 +64,19 @@ class Waypointsmove(Node):
         # Undock and start following waypoints
         self.navigator.undock()
         self.follow_waypoints_and_record_position()
+        # Go near the dock
+        self.navigator.info('Docking for charge')
+        self.navigator.startToPose(self.navigator.getPoseStamped([-0.3, 0.0],
+                                TurtleBot4Directions.NORTH))
+        self.navigator.dock()
 
+        if not self.navigator.getDockedStatus():
+            self.navigator.error('Robot failed to dock')
+            
         # After navigating, dock the robot
         # self.navigator.dock()
         self.get_logger().info('Finished')
+        rclpy.shutdown()
 
     def load_waypoints_from_yaml(self, file_path):
         with open(file_path, 'r') as yaml_file:
@@ -80,6 +93,7 @@ class Waypointsmove(Node):
             time.sleep(5.0) # 5sec
             self.record_current_position()
 
+
     def listener_callback(self, msg):
         self.get_logger().info('Received PointStamped: x = %.2f, y = %.2f' % (msg.point.x, msg.point.y))
         self.real_position = msg.point
@@ -90,27 +104,64 @@ class Waypointsmove(Node):
         executor.add_node(self)
         executor.spin()
 
-    def record_current_position(self):
-        #####################
-        #####################
+    # def record_current_position(self):
+    #     #####################
+    #     #####################
 
-        # Change this to save the sensor reading and stampedpoint into SQL
-        #####################
+    #     # Change this to save the sensor reading and stampedpoint into SQL
+    #     #####################
 
-        with open(os.path.join(pose_dir, f'{self.map_name}_data.yaml'), 'a') as file:
-            yaml.dump({
-                'position': {
-                    'x': self.real_position.x,
-                    'y': self.real_position.y,
-                    'z': self.real_position.z
-                },
-                'timestamp': {
-                    'sec': self.real_timestamp.sec,
-                    'nanosec': self.real_timestamp.nanosec
+    #     with open(os.path.join(pose_dir, 'current_position.yaml'), 'a') as file:
+    #         yaml.dump({
+    #             'position': {
+    #                 'x': self.real_position.x,
+    #                 'y': self.real_position.y,
+    #                 'z': self.real_position.z
+    #             },
+    #             'timestamp': {
+    #                 'sec': self.real_timestamp.sec,
+    #                 'nanosec': self.real_timestamp.nanosec
+    #             }
+    #         }, file)
+    #     self.get_logger().info(f'Recorded position: x = {self.real_position.x}, y = {self.real_position.y}, z = {self.real_position.z}')
+
+    def record_current_position(self):         
+        # Convert the ROS2 timestamp to datetime        
+        timestamp_sec = self.real_timestamp.sec         
+        timestamp_nanosec = self.real_timestamp.nanosec         
+        timestamp = datetime.utcfromtimestamp(timestamp_sec) + timedelta(microseconds=timestamp_nanosec / 1000)         
+        formatted_timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]  
+        # To match the format with millisecondsmap
+        # Change this to save the sensor reading and stamped point into SQL
+        try:
+            response = requests.post(
+                'http://192.168.8.101:5000/render-timestamp-data',
+                data={
+                    'timestamp' : formatted_timestamp,
+                    'x' : self.real_position.x,
+                    'y' : self.real_position.y,
+                    'z' : self.real_position.z,
                 }
-            }, file)
-        self.get_logger().info(f'Recorded position: x = {self.real_position.x}, y = {self.real_position.y}, z = {self.real_position.z}')
+            )
+            if response.status_code == 200:
+                self.get_logger().info(f'Successfully sent data to server: {response.text}')
+            else:
+                self.get_logger().info(f'Failed to send data to server: {response.status_code}')
+        except Exception as e:
+            self.get_logger().error(f'Exception occured while sending data to server: {str(e)}')
+            
+        with open(os.path.join(pose_dir, f'{self.wp_name}_data.yaml'), 'a') as file:             
+            yaml.dump({                 
+                'position': {                     
+                    'x': self.real_position.x,                     
+                    'y': self.real_position.y,                     
+                    'z': self.real_position.z                 
+                    },                 
+                'timestamp': formatted_timestamp             
+                }, file)         
+        self.get_logger().info(f'Recorded position: x = {self.real_position.x}, y = {self.real_position.y}, z = {self.real_position.z}, timestamp = {formatted_timestamp}')
 
+        
 
 def main():
     rclpy.init()
