@@ -69,3 +69,18 @@ This node will listen the transform of the `base_link` with respect to `map`and 
 ros2 run aaqr_ros2_py waypoints_move_node  --ros-args -p map_name:="myname"
 ```
 https://answers.ros.org/question/401066/ros2-how-to-do-multi-threading-subscription-callbacks-spinning-executors/
+
+### Schedule task
+
+```
+~/run_task.sh
+chmod +x run_task.sh
+```
+```
+crontab -e
+* * * * * /home/USER/run_task.sh
+```
+Use this to check
+```
+crontab -l
+```
