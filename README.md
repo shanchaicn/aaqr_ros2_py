@@ -58,11 +58,10 @@ ros2 run aaqr_ros2_py save_poses_node --ros-args -p wp_name:="myname"
 ```
 USE THE SAME NAME IN THE WAYPOINTS MOVE
 
-### One launch file for waypoints following
+# One launch file for waypoints following
 
 ```
 ros2 launch aaqr_ros2_py waypoints_move_launch.py map:="map_name.yaml" wp_name:='map0'
-
 ```
 
 ### Follow waypoints
