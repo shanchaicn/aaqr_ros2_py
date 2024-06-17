@@ -54,9 +54,17 @@ ros2 launch turtlebot4_viz view_robot.launch.py
 *After running the Naviagtion*
 Change the `myname` with what you want.
 ```
-ros2 run aaqr_ros2_py save_poses_node --ros-args -p map_name:="myname"
+ros2 run aaqr_ros2_py save_poses_node --ros-args -p wp_name:="myname"
 ```
 USE THE SAME NAME IN THE WAYPOINTS MOVE
+
+### One launch file for waypoints following
+
+```
+ros2 launch aaqr_ros2_py waypoints_move_launch.py map:="map_name.yaml" wp_name:='map0'
+
+```
+
 ### Follow waypoints
 
 *After running the Naviagtion*
@@ -66,7 +74,7 @@ ros2 run aaqr_ros2_py framelistener
 ```
 This node will listen the transform of the `base_link` with respect to `map`and publish the pointStamped to topic `\turtlebot4_position`.
 ```
-ros2 run aaqr_ros2_py waypoints_move_node  --ros-args -p map_name:="myname"
+ros2 run aaqr_ros2_py waypoints_move_node  --ros-args -p wp_name:="myname"
 ```
 https://answers.ros.org/question/401066/ros2-how-to-do-multi-threading-subscription-callbacks-spinning-executors/
 
