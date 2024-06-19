@@ -78,6 +78,8 @@ ros2 run aaqr_ros2_py waypoints_move_node  --ros-args -p wp_name:="myname"
 https://answers.ros.org/question/401066/ros2-how-to-do-multi-threading-subscription-callbacks-spinning-executors/
 
 ### Schedule task
+#### how to use crontab?
+https://www.ibm.com/docs/en/db2oc?topic=task-unix-cron-format
 
 ```
 ~/run_task.sh
