@@ -61,7 +61,7 @@ USE THE SAME NAME IN THE WAYPOINTS MOVE
 # One launch file for waypoints following
 
 ```
-ros2 launch aaqr_ros2_py waypoints_move_launch.py map:="map_name.yaml" wp_name:='map0'
+ros2 launch aaqr_ros2_py waypoints_move_launch.py map:="map_name.yaml" wp_name:='myname'
 ```
 
 ### Follow waypoints
