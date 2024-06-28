@@ -13,8 +13,8 @@ os.makedirs(pose_dir, exist_ok=True)
 class PoseSaver(Node):
     def __init__(self):
         super().__init__('pose_saver')
-        self.map_name = self.declare_parameter('map_name', 'map').get_parameter_value().string_value
-        self.filepath = os.path.join(pose_dir, f'{self.map_name}.yaml')
+        self.wp_name = self.declare_parameter('wp_name', 'map').get_parameter_value().string_value
+        self.filepath = os.path.join(pose_dir, f'{self.wp_name}.yaml')
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
         

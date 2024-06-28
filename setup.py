@@ -21,7 +21,6 @@ setup(
     entry_points={
         'console_scripts': [
             'save_poses_node = aaqr_ros2_py.save_poses_node:main',
-            'follow_waypoints_from_yaml = aaqr_ros2_py.follow_waypoints_from_yaml:main',
             'framelistener = aaqr_ros2_py.framelistener:main',
             'waypoints_move_node = aaqr_ros2_py.waypoints_move_node:main'
         ],

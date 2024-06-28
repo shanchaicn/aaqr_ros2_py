@@ -17,7 +17,7 @@ class FrameListener(Node):
 
         # Declare and acquire `target_frame` parameter
         self.target_frame = self.declare_parameter(
-            'target_frame', 'odom').get_parameter_value().string_value
+            'target_frame', 'map').get_parameter_value().string_value
 
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)

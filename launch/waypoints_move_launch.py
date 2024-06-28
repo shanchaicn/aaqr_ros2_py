@@ -27,12 +27,6 @@ def generate_launch_description():
         prefix=["xterm -e"]
     )
 
-    nav_to_pose_node = Node(
-        package='aaqr_ros2_py',
-        executable='nav_to_pose',
-        name='nav_test',
-    )
-
     pose_pub_node = Node(
             package='aaqr_ros2_py',
             executable='framelistener',

@@ -2,9 +2,9 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>aaqr_ros2_py</name>
-  <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="shan@todo.todo">shan</maintainer>
+  <version>0.0.1</version>
+  <description>Turtlebot4 save and follow points</description>
+  <maintainer email="shanchaicn@gmail.com">shan</maintainer>
   <license>TODO: License declaration</license>
 
   <test_depend>ament_copyright</test_depend>
