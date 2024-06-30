@@ -113,8 +113,6 @@ ros2 run aaqr_ros2_py waypoints_move_node  --ros-args -p wp_name:="wpname"
 
 ### 4. Schedule the waypoints following task
 
-#### 4.0 How to use crontab?
-
 #### 4.1 Build a sh scriptt file
 
 Change the `USER` name and `wpname`. Save it as `~/run_task.sh`. And add the execute (x) permission to this script by this command : `chmod +x ~/run_task.sh`
